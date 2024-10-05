@@ -89,6 +89,7 @@ $request = SymfonyRequest::createFromGlobals();
 $configManager = new ConfigManager(__DIR__, $request->getRequestUri());
 $SETTINGS = $configManager->getAllSettings();
 $antiXss = new AntiXSS();
+$SETTINGS = $antiXss->xss_clean($SETTINGS);
 $session->set('encryptClientServer', (int) $SETTINGS['encryptClientServer'] ?? 1);
 
 // Quick major version check -> upgrade needed?
@@ -97,14 +98,17 @@ if (isset($SETTINGS['teampass_version']) === true && version_compare(TP_VERSION,
     if (headers_sent()) {
         echo '<script language="javascript" type="text/javascript">document.location.replace("install/install.php");</script>';
     } else {
+        // Update the timestamp to ensure $SETTINGS['teampass_version'] is correct after the upgrade
+        $teampassSettings = $session->get('teampass-settings', []);
+        $teampassSettings['timestamp'] = time();
+        $session->set('teampass-settings', $teampassSettings);
+        
+        // Redirect to the upgrade page
         header('Location: install/upgrade.php');
     }
     // No other way, we should stop processing further
     exit;
 }
-
-
-$SETTINGS = $antiXss->xss_clean($SETTINGS);
 
 // Load Core library
 require_once $SETTINGS['cpassman_dir'] . '/sources/core.php';
