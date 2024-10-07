@@ -120,8 +120,26 @@ class ItemController extends BaseController
     }
     //end InFoldersAction()
 
-    private function checkNewItemData(array $arrQueryStringParams, array $userData): array
+    /**
+     * Check if all mandatory fields are provided
+     * 
+     * @param array|string $arrQueryStringParams
+     * @param array $userData
+     * 
+     * @return array
+     */
+    private function checkNewItemData(array|string $arrQueryStringParams, array $userData): array
     {
+        // Check if $arrQueryStringParams is an array
+        if (!is_array($arrQueryStringParams)) {
+            return [
+                'error' => true,
+                'strErrorDesc' => 'Invalid data format: expected array, got string.',
+                'strErrorHeader' => 'HTTP/1.1 400 Bad Request',
+            ];
+        }
+
+        // Check if all mandatory fields are provided
         if (isset($arrQueryStringParams['label']) === true
             && isset($arrQueryStringParams['folder_id']) === true
             && isset($arrQueryStringParams['password']) === true
@@ -131,7 +149,7 @@ class ItemController extends BaseController
             && isset($arrQueryStringParams['tags']) === true
             && isset($arrQueryStringParams['anyone_can_modify']) === true
         ) {
-            //
+            // Check if user is allowed to create an item
             if (in_array($arrQueryStringParams['folder_id'], $userData['folders_list']) === false) {
                 return [
                     'error' => true,
@@ -151,6 +169,7 @@ class ItemController extends BaseController
             }
         }
 
+        // Send error
         return [
             'error' => true,
             'strErrorDesc' => 'All fields have to be provided even if empty (refer to documentation).',

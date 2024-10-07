@@ -88,13 +88,14 @@ function get_authorization_header()
 	$authorizationHeader = $request->headers->get('Authorization');
 	$headers = null;
 	
-	if (null !== $authorizationHeader) {
+	// HEADER: Get the header Authorization
+	if (!empty($authorizationHeader)) {
 		$headers = trim($authorizationHeader);
 	} else if (function_exists('apache_request_headers') === true) {
 		$requestHeaders = (array) apache_request_headers();
 		// Server-side fix for bug in old Android versions (a nice side-effect of this fix means we don't care about capitalization for Authorization)
 		$requestHeaders = array_combine(array_map('ucwords', array_keys($requestHeaders)), array_values($requestHeaders));
-		//print_r($requestHeaders);
+		
 		if (isset($requestHeaders['Authorization']) === true) {
 			$headers = trim($requestHeaders['Authorization']);
 		}

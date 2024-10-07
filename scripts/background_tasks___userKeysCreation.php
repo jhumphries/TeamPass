@@ -113,7 +113,7 @@ function subtasksHandler($taskId, $taskArguments)
             // Extract the subtask parameters
             $subTaskParams = json_decode($subTask['task'], true);
 
-            error_log('Subtask in progress: '.$subTask['increment_id']." (".$taskId.") - ".print_r($subTaskParams,true));
+            //error_log('Subtask in progress: '.$subTask['increment_id']." (".$taskId.") - ".print_r($subTaskParams,true));
 /*
             $fichier = fopen(__DIR__.'/log.txt', 'a');
             fwrite($fichier, 'Step : '.$subTaskParams['step']." - index : ".$subTaskParams['index']."\n");

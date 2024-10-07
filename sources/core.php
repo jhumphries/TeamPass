@@ -365,14 +365,11 @@ if (
     $server_cert = openssl_x509_parse($server['ssl_server_cert']);
     $cert_name = $server_cert['name'];
     $cert_issuer = '';
-    /** @var array $issuer */
-    $issuer = $server_cert['issuer'];
-
-    if (is_array($issuer)) {
-        foreach ($issuer as $key => $value) {
-            if (is_array($value) === false) {
-                $cert_issuer .= "/{$key}={$value}";
-            }
+    
+    $issuer = (array) $server_cert['issuer'];
+    foreach ($issuer as $key => $value) {
+        if (is_array($value) === false) {
+            $cert_issuer .= "/{$key}={$value}";
         }
     }
     if (isset($cert_name) === true && empty($cert_name) === false && $cert_name !== $cert_issuer) {

@@ -1254,7 +1254,6 @@ function authenticateThroughAD(string $username, array $userInfo, string $passwo
         }
 
     } catch (\LdapRecord\Query\ObjectNotFoundException $e) {
-        $error = $e->getDetailedError();
         return [
             'error' => true,
             'message' => $lang->get('error_bad_credentials'),

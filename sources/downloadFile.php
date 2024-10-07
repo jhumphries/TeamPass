@@ -98,9 +98,11 @@ $get_pathIsFiles = (string) $antiXss->xss_clean($request->query->get('pathIsFile
 
 // Remove newline characters from the filename
 $get_filename = str_replace(array("\r", "\n"), '', $get_filename);
+// Remove any characters that are not alphanumeric, underscore, dot, or dash
+$get_filename = preg_replace('/[^a-zA-Z0-9_\.-]/', '', basename($get_filename));
 
 // prepare Encryption class calls
-header('Content-disposition: attachment; filename=' . rawurldecode(basename($get_filename)));
+header('Content-disposition: attachment; filename=' . rawurldecode($get_filename));
 header('Content-Type: application/octet-stream');
 header('Cache-Control: must-revalidate, no-cache, no-store');
 header('Expires: 0');

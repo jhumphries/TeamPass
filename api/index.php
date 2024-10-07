@@ -23,7 +23,13 @@
  * @see       https://www.teampass.net
  */
 
-header("Access-Control-Allow-Origin: ".$_SERVER['HTTP_HOST']);
+ $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https://' : 'http://';
+ $host = filter_var($_SERVER['HTTP_HOST'], FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME);
+if ($host !== false) {
+    header("Access-Control-Allow-Origin: $protocol$host");
+} else {
+    header("Access-Control-Allow-Origin: 'null'"); 
+}
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Methods: POST, GET");
 header("Access-Control-Max-Age: 3600");

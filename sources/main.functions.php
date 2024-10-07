@@ -1286,7 +1286,7 @@ function prepareExchangedData($data, string $type, ?string $key = null)
             );
         } else {
             // Double html encoding received
-            $data = html_entity_decode(html_entity_decode($data));
+            $data = html_entity_decode(html_entity_decode(/** @scrutinizer ignore-type */$data));
         }
 
         // Return data array
@@ -2404,7 +2404,7 @@ function encryptUserObjectKey(string $key, string $publicKey): string
     $rsa->loadKey($decodedPublicKey);
     // Encrypt
     $encrypted = $rsa->encrypt(base64_decode($key));
-    if ($encrypted === false) {
+    if (empty($encrypted)) {
         throw new RuntimeException("Error while encrypting key.");
     }
     // Return
@@ -2443,7 +2443,7 @@ function decryptUserObjectKey(string $key, string $privateKey): string
         }
 
         $tmpValue = $rsa->decrypt($decodedKey);
-        if ($tmpValue !== false) {
+        if (empty($tmpValue)) {
             return base64_encode($tmpValue);
         } else {
             return '';
@@ -3998,7 +3998,7 @@ function createTaskForItem(
 
     // 2- Create expected tasks
     // ---
-    if (is_array($taskName) === false) {
+    if (!is_array($taskName)) {
         $taskName = [$taskName];
     }
     foreach($taskName as $task) {
